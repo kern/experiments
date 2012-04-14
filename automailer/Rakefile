@@ -26,7 +26,7 @@ end
 
 desc "Send the generated email"
 task :email do
-  File.open("email.txt") do |f|
+  File.open("email.dat") do |f|
     mail = Marshal.load(f.read)
     mail.deliver!
   end
@@ -42,7 +42,7 @@ task :generate do |t, args|
     delivery_method :sendmail
   end
 
-  File.open("email.txt", "w") do |f|
+  File.open("email.dat", "w") do |f|
     str = Marshal.dump(mail)
     f.write(str)
   end
