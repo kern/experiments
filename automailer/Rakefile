@@ -1,0 +1,49 @@
+require "mail"
+
+def prompt(question)
+  STDOUT.puts question
+  STDOUT.print "? "
+  STDIN.gets.chomp
+end
+
+def multiline_prompt(question)
+  STDOUT.puts question
+  STDOUT.puts "== Type END to quit. =="
+
+  n = 0
+  result = ""
+  loop do
+    n += 1
+    STDOUT.print "#{n} "
+    line = STDIN.gets.chomp
+    break if line == "END"
+    result << line
+    result << "\r\n"
+  end
+
+  result
+end
+
+desc "Send the generated email"
+task :email do
+  File.open("email.txt") do |f|
+    mail = Marshal.load(f.read)
+    mail.deliver!
+  end
+end
+
+desc "Generate the sent email"
+task :generate do |t, args|
+  mail = Mail.new do
+    from prompt("From address")
+    to prompt("To address")
+    subject prompt("Subject")
+    body multiline_prompt("Body")
+    delivery_method :sendmail
+  end
+
+  File.open("email.txt", "w") do |f|
+    str = Marshal.dump(mail)
+    f.write(str)
+  end
+end

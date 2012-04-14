@@ -1,0 +1,4 @@
+source :rubygems
+gem "mail"
+gem "rake"
+gem "whenever"
